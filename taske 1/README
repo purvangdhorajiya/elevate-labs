@@ -1,0 +1,18 @@
+# Task 1: Excel Data Cleaning
+
+Dataset: Netflix Movies and TV Shows
+
+Steps Performed:
+- Imported CSV and validated headers
+- Handled missing values
+- Removed duplicates safely
+- Standardized text fields
+- Corrected date and numeric formats
+- Created cleaned dataset
+- Added data quality notes
+
+Tools Used:
+- Microsoft Excel
+
+Outcome:
+Produced a clean, structured dataset ready for analysis.
