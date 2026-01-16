@@ -1,0 +1,1 @@
+Profit Margin = Profit / Sales
