@@ -1,0 +1,3 @@
+1. Top 3 products contribute more than 45% of total revenue, showing revenue concentration in few SKUs.
+2. West region generates the highest sales, making it the primary growth market.
+3. Nearly 18% of customers have never placed any orders, indicating opportunity for re-engagement campaigns.
