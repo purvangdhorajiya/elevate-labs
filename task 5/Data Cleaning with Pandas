@@ -1,0 +1,77 @@
+# Task 5: Python Basics – Data Cleaning with Pandas
+
+#Dataset: Titanic Dataset  
+#Objective: Read, clean, transform, and export cleaned data using Python.
+
+import pandas as pd
+import numpy as np
+
+# Load dataset
+df = pd.read_csv("titanic.csv")
+
+# Preview data
+df.head()
+
+#We first load the dataset and inspect the first few rows to understand column names and sample values.
+
+# Check structure
+df.info()
+
+# Check missing values
+df.isnull().sum()
+
+
+#We analyze missing values to decide whether to drop or fill them based on column type and importance.
+
+# Fill numeric column 'Age' with median
+df['Age'] = df['Age'].fillna(df['Age'].median())
+
+# Fill categorical column 'Embarked' with mode
+df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])
+
+# Drop column with too many missing values
+df = df.drop(columns=['Cabin'])
+
+
+
+#We remove duplicate rows to avoid biased analysis and incorrect aggregations.
+
+before = df.shape[0]
+df = df.drop_duplicates()
+after = df.shape[0]
+
+print("Rows before:", before)
+print("Rows after removing duplicates:", after)
+
+
+#We convert datatypes to enable correct calculations and time-based analysis.
+
+# Convert Survived to integer
+df['Survived'] = df['Survived'].astype(int)
+
+# Convert Sex to category
+df['Sex'] = df['Sex'].astype('category')
+
+
+#We create new columns to demonstrate transformation ability.
+
+# Create Age Category
+df['Age_Category'] = pd.cut(df['Age'], bins=[0,12,60,100], labels=['Child','Adult','Senior'])
+
+# Create Fare Band
+df['Fare_Band'] = pd.qcut(df['Fare'], 3, labels=['Low','Medium','High'])
+
+
+#We perform a final check to ensure data is clean and ready for analysis.
+
+df.info()
+df.head()
+
+
+#Save Cleaned Dataset
+
+# Save cleaned data
+df.to_csv("cleaned_data.csv", index=False)
+
+print("Cleaned dataset saved as cleaned_data.csv")
+  
