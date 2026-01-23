@@ -1,0 +1,82 @@
+# Task 6: Data Visualization – Python Charts for Insights
+
+#Dataset: Retail Sales Dataset  
+#Objective: Create multiple charts to analyze trends, distributions, and relationships.
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load cleaned dataset
+df = pd.read_csv("cleaned_data.csv")
+
+# Convert order_date to datetime
+df['order_date'] = pd.to_datetime(df['order_date'])
+
+df.head()
+
+
+#We verify column names and datatypes to ensure correct visualization and grouping.
+
+df.info()
+
+
+#Bar chart shows top 10 categories based on total sales.
+
+# Aggregate sales by category
+top_categories = df.groupby('category')['sales'].sum().sort_values(ascending=False).head(10)
+
+plt.figure(figsize=(10,6))
+top_categories.plot(kind='bar')
+plt.title("Top 10 Categories by Total Sales")
+plt.xlabel("Category")
+plt.ylabel("Total Sales")
+plt.grid(True)
+plt.show()
+
+
+#Line chart shows monthly sales trend over time to identify growth and seasonality.
+
+# Create month column
+df['month'] = df['order_date'].dt.to_period('M')
+
+monthly_sales = df.groupby('month')['sales'].sum()
+
+plt.figure(figsize=(10,6))
+plt.plot(monthly_sales.index.astype(str), monthly_sales.values)
+plt.title("Monthly Sales Trend")
+plt.xlabel("Month")
+plt.ylabel("Total Sales")
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.show()
+
+
+# Histogram shows distribution of profit values to identify skewness and outliers.
+
+plt.figure(figsize=(8,6))
+plt.hist(df['profit'], bins=30)
+plt.title("Profit Distribution")
+plt.xlabel("Profit")
+plt.ylabel("Frequency")
+plt.grid(True)
+plt.show()
+
+
+# Scatter plot shows correlation between sales and profit.
+
+plt.figure(figsize=(8,6))
+plt.scatter(df['sales'], df['profit'], alpha=0.5)
+plt.title("Sales vs Profit")
+plt.xlabel("Sales")
+plt.ylabel("Profit")
+plt.grid(True)
+plt.show()
+
+
+
+
+# Key Insights from Visualizations
+
+# 1. Technology and Office Supplies are the highest revenue-generating categories.
+# 2. Monthly sales show clear seasonality with peak sales during mid-year months.
+# 3. Most orders generate low to medium profit, with few high-profit outliers.
