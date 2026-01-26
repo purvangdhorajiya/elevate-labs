@@ -1,0 +1,8 @@
+Total Sales = SUM(Orders[Sales])
+
+
+Total Profit = SUM(Orders[Profit])
+
+
+
+Profit Margin = DIVIDE([Total Profit], [Total Sales])
