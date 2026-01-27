@@ -1,0 +1,5 @@
+1. West region has the highest number of top-ranked customers, indicating strong revenue concentration in that region.
+
+2. Running total analysis shows consistent growth in cumulative sales over time, with sharp increases during peak months.
+
+3. In most categories, top 3 products contribute more than 50% of category revenue, showing dependency on few high-performing products.
