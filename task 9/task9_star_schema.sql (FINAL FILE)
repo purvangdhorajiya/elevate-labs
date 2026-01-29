@@ -1,0 +1,94 @@
+-- ============================================
+-- Task 9: SQL Data Modeling – Star Schema
+-- File: task9_star_schema.sql
+-- ============================================
+
+-- 1. CUSTOMER DIMENSION
+CREATE TABLE dim_customer (
+    customer_id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(150) UNIQUE
+);
+
+-- 2. PRODUCT DIMENSION
+CREATE TABLE dim_product (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(150),
+    category VARCHAR(100)
+);
+
+-- 3. REGION DIMENSION
+CREATE TABLE dim_region (
+    region_id SERIAL PRIMARY KEY,
+    region_name VARCHAR(50) UNIQUE
+);
+
+-- 4. DATE DIMENSION
+CREATE TABLE dim_date (
+    date_id SERIAL PRIMARY KEY,
+    order_date DATE,
+    year INT,
+    month INT,
+    day INT
+);
+
+-- 5. FACT TABLE
+CREATE TABLE fact_sales (
+    sales_id SERIAL PRIMARY KEY,
+    date_id INT REFERENCES dim_date(date_id),
+    customer_id INT REFERENCES dim_customer(customer_id),
+    product_id INT REFERENCES dim_product(product_id),
+    region_id INT REFERENCES dim_region(region_id),
+    sales NUMERIC(10,2),
+    profit NUMERIC(10,2)
+);
+
+-- 6. INSERT INTO DIMENSIONS
+
+INSERT INTO dim_customer (customer_name)
+SELECT DISTINCT customer_name FROM orders_raw;
+
+INSERT INTO dim_product (product_name, category)
+SELECT DISTINCT product_name, category FROM orders_raw;
+
+INSERT INTO dim_region (region_name)
+SELECT DISTINCT region FROM orders_raw;
+
+INSERT INTO dim_date (order_date, year, month, day)
+SELECT DISTINCT 
+    order_date,
+    EXTRACT(YEAR FROM order_date),
+    EXTRACT(MONTH FROM order_date),
+    EXTRACT(DAY FROM order_date)
+FROM orders_raw;
+
+-- 7. INSERT INTO FACT TABLE
+
+INSERT INTO fact_sales (date_id, customer_id, product_id, region_id, sales, profit)
+SELECT
+    d.date_id,
+    c.customer_id,
+    p.product_id,
+    r.region_id,
+    o.sales,
+    o.profit
+FROM orders_raw o
+JOIN dim_date d ON o.order_date = d.order_date
+JOIN dim_customer c ON o.customer_name = c.customer_name
+JOIN dim_product p ON o.product_name = p.product_name
+JOIN dim_region r ON o.region = r.region_name;
+
+-- 8. INDEXES FOR PERFORMANCE
+CREATE INDEX idx_fact_date ON fact_sales(date_id);
+CREATE INDEX idx_fact_customer ON fact_sales(customer_id);
+CREATE INDEX idx_fact_product ON fact_sales(product_id);
+CREATE INDEX idx_fact_region ON fact_sales(region_id);
+
+-- 9. ANALYTICS QUERY (STAR JOIN)
+
+SELECT 
+    r.region_name,
+    SUM(f.sales) AS total_sales,
+    SUM(f.profit) AS total_profit
+FROM fact_sales f
+JOIN dim_region r ON f.region_id = r.region_id
+GROUP BY r.region_name;
